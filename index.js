@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', function() {
             code: document.getElementById('code').value,
         }
         console.log(send)
-        fetch('http://localhost:3000/search', {
+        fetch('/search', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
