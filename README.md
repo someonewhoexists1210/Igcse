@@ -29,6 +29,8 @@ KEY=APIKEY
 ```bash
 python main.py
 ```
+## Screenshot
+![alt text](image.png)
 
 ## Contributions
 You are welcome to contribute! Just make sure to fork the repo
