@@ -1,5 +1,5 @@
 # IGCSE Mark Scheme Finder
-This is a igcse mark scheme finder which gives you the pdf link to the mark scheme of the question paper code you give
+This is a igcse mark scheme finder which gives you the pdf link to the mark scheme 
 
 ## Usage
 Visit https://igcse.someonewhoexists.hackclub.app to use this website
