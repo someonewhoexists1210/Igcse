@@ -14,13 +14,20 @@
     <br>Where 0625 is the subject code, 43 is the paper number, O/N is the month (October/November), and 22 is the year.
     </p>
     <form id="form">
-        
+        <label for="subject">Enter the subject:</label>
+        <select id="subject" name="subject"></select>
+        <label for="variant">Select the variant:</label>
+        <input type="radio" id="ms" name="variant" value="ms">
+        <label for="ms">Mark Scheme</label>
+        <input type="radio" id="qp" name="variant" value="qp">
+        <label for="qp">Question Paper</label>
         <label for="code">Enter the paper code:</label>
         <input type="text" id="code" name="code">
         <button type="submit">Submit</button>
     </form>
 
-    <div><a id="result"></a></div>
+    <div class="center"><embed src="" width="600" height="400" type="application/pdf" id="result">
+    </div>
     
 </body>
 </html>

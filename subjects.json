@@ -1,0 +1,29 @@
+{
+    "subjects": [
+      { "name": "Mathematics", "code": "0580" },
+      { "name": "Additional Mathematics", "code": "0606" },
+      { "name": "Mathematics (Extended)", "code": "0581" },
+      { "name": "English Language", "code": "0500" },
+      { "name": "Physics", "code": "0625" },
+      { "name": "Chemistry", "code": "0620" },
+      { "name": "Biology", "code": "0610" },
+      { "name": "Geography", "code": "0460" },
+      { "name": "History", "code": "0470" },
+      { "name": "Computer Science", "code": "0478" },
+      { "name": "Business Studies", "code": "0450" },
+      { "name": "Art & Design", "code": "0400" },
+      { "name": "Economics", "code": "0455" },
+      { "name": "Physical Education", "code": "0413" },
+      { "name": "French", "code": "0520" },
+      { "name": "Spanish", "code": "0530" },
+      { "name": "German", "code": "0525" },
+      { "name": "Chinese", "code": "0547" },
+      { "name": "Design & Technology", "code": "0445" },
+      { "name": "Music", "code": "0410" },
+      { "name": "Religious Studies", "code": "0490" },
+      { "name": "Travel & Tourism", "code": "0471" },
+      { "name": "Environmental Management", "code": "0680" },
+      { "name": "Information & Communication Technology", "code": "0417" }
+    ]
+  }
+  
