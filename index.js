@@ -29,7 +29,8 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(response => response.json())
         .then(data => {
             if (data.error) {
-                document.getElementById('result').innerHTML = data.error
+                document.getElementById('result').src = ''
+                alert(data.error)
                 return
             }
             document.getElementById('result').src = data.link

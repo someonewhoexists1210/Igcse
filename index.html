@@ -17,16 +17,18 @@
         <label for="subject">Enter the subject:</label>
         <select id="subject" name="subject"></select>
         <label for="variant">Select the variant:</label>
-        <input type="radio" id="ms" name="variant" value="ms">
-        <label for="ms">Mark Scheme</label>
-        <input type="radio" id="qp" name="variant" value="qp">
-        <label for="qp">Question Paper</label>
+        <div class="radio-group">
+            <input type="radio" id="ms" name="variant" value="ms">
+            <label for="ms" class="r">Mark Scheme</label>
+            <input type="radio" id="qp" name="variant" value="qp">
+            <label for="qp" class="r">Question Paper</label>
+        </div>
         <label for="code">Enter the paper code:</label>
         <input type="text" id="code" name="code">
         <button type="submit">Submit</button>
     </form>
 
-    <div class="center"><embed src="" width="600" height="400" type="application/pdf" id="result">
+    <div class="center"><iframe src="" width="700" height="800" type="application/pdf" id="result"></iframe>
     </div>
     
 </body>
