@@ -15,16 +15,32 @@
     </p>
     <form id="form">
         <label for="subject">Enter the subject:</label>
-        <select id="subject" name="subject"></select>
-        <label for="variant">Select the variant:</label>
+        <select id="subject" name="subject" required></select>
+
+        <label for="paper">Enter the paper:</label>
+        <input type="number" id="paper" name="paper" max="6" min='1' required>
+
+        <label for="variant">Enter the variant:</label>
+        <input type="number" id="variant" name="variant" max="3" min="1" required>
+
+        <label for="series">Select series:</label>
+        <select id="series" name="series" required>
+            <option value="O">Oct-Nov</option>
+            <option value="F">Feb-Mar</option>
+            <option value="M">May-June</option>
+        </select>
+
+        <label for="year">Enter the year:</label>
+        <input type="number" id="year" name="year" max="2050" min='2010' required>
+
+
+        <label for="type">Select:</label>
         <div class="radio-group">
-            <input type="radio" id="ms" name="variant" value="ms">
+            <input type="radio" id="ms" name="type" value="ms" required>
             <label for="ms" class="r">Mark Scheme</label>
-            <input type="radio" id="qp" name="variant" value="qp">
+            <input type="radio" id="qp" name="type" value="qp">
             <label for="qp" class="r">Question Paper</label>
         </div>
-        <label for="code">Enter the paper code:</label>
-        <input type="text" id="code" name="code">
         <button type="submit">Submit</button>
     </form>
 

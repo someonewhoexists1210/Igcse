@@ -61,6 +61,16 @@ form > * {
     z-index: 1;
 }
 
+input[type="number"] {
+    width: calc(100% - 22px);
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    font-size: 1rem;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
 label:not(.r) {
     display: block;
     margin: 10px 0 5px;

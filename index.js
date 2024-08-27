@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', function() {
-    let form = document.getElementById('form');
     let subject = document.getElementById('subject');
     fetch('http://127.0.0.1:5379/subjects').then(response => response.json())
     .then(data => {
@@ -11,20 +10,14 @@ document.addEventListener('DOMContentLoaded', function() {
             subject.add(option);
     })
 
-
+    let form = document.getElementById('form');
     form.addEventListener('submit', function(event) {
         event.preventDefault();
-        let send = {
-            code: document.getElementById('code').value,
-            qp: document.querySelector('input[name="variant"]:checked').value
-        }
-        console.log(send)
+        console.log(form)
+        let send = new FormData(this);
         fetch('http://127.0.0.1:5379/search', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(send)
+            body: send
         })
         .then(response => response.json())
         .then(data => {

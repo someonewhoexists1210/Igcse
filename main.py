@@ -35,16 +35,17 @@ def search_query(query):
     
     return res['items'][0]['link']
 
-def codeify_ms(q):
+def codeify_ms(data):
     code = ''
-    parts = q.split('/')
-    code += parts[0] + "_"
+    code += data['subject'] + '_'
+    parts = [data['paper'], data['variant'], data['series'], data['year'][2:]]
     if parts[2] == 'M':
-        code += 's' + parts[4] + '_ms_' + parts[1]
+        code += 's' + parts[0] + parts[1] + '_ms_' + parts[3]
     elif parts[2] == 'O':
-        code += 'w' + parts[4] + '_ms_' + parts[1]
+        code += 'w' + parts[0] + parts[1] + '_ms_' + parts[3]
     elif parts[2] == 'F':
-        code += 'm' + parts[4] + '_ms_' + parts[1]
+        code += 'm' + parts[0] + parts[1] + '_ms_' + parts[3]
+    print(code)
     return code
 
 def codeify_qp(q):
@@ -52,24 +53,20 @@ def codeify_qp(q):
 
 @app.route('/search', methods=['POST'])
 def main():
-    q = request.json['code']
-    
-    if request.json['qp'] == 'qp':
-        q = codeify_qp(q)
-        print(q)
-    else:
-        q = codeify_ms(q)
+    data = request.form
+    if data['type'] == 'ms':
+        query = codeify_ms(data)
+    elif data['type'] == 'qp':
+        query = codeify_qp(data)
 
-    link = search_query(q)
+    link = search_query(query)
     if link is None:
-        return jsonify({'error': 'No results found'})
-    else:
-        print('code:', q)
-        return jsonify({'link': link})
+        return jsonify({'error': 'Not found'})
+    return jsonify({'link': link})
 
 @app.route('/subjects', methods=['GET'])
 def get_subjects():
     return jsonify(subjects)
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5379)
+    app.run(host='0.0.0.0', port=5379, debug=True)
