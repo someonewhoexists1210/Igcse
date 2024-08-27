@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', function() {
     let subject = document.getElementById('subject');
-    fetch('http://127.0.0.1:5379/subjects').then(response => response.json())
+    fetch('/subjects').then(response => response.json())
     .then(data => {
         console.log(data)
         data.subjects.forEach(element => {
@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', function() {
         event.preventDefault();
         console.log(form)
         let send = new FormData(this);
-        fetch('http://127.0.0.1:5379/search', {
+        fetch('/search', {
             method: 'POST',
             body: send
         })
