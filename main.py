@@ -24,6 +24,7 @@ def search_query(query):
         'q': query,
         'fileType': 'pdf',
     }
+    print(url, params)
     response = requests.get(url, params=params)
     if response.status_code != 200:
         return None
@@ -40,12 +41,11 @@ def codeify_ms(data):
     code += data['subject'] + '_'
     parts = [data['paper'], data['variant'], data['series'], data['year'][2:]]
     if parts[2] == 'M':
-        code += 's' + parts[0] + parts[1] + '_ms_' + parts[3]
+        code += 's' + parts[3] + '_ms_' + parts[0] + parts[1]
     elif parts[2] == 'O':
-        code += 'w' + parts[0] + parts[1] + '_ms_' + parts[3]
+        code += 'w' + parts[3] + '_ms_' + parts[0] + parts[1] 
     elif parts[2] == 'F':
-        code += 'm' + parts[0] + parts[1] + '_ms_' + parts[3]
-    print(code)
+        code += 'm' + parts[3] + '_ms_' + parts[0] + parts[1]
     return code
 
 def codeify_qp(q):
@@ -68,5 +68,8 @@ def main():
 def get_subjects():
     return jsonify(subjects)
 
+
+HOST = '127.0.0.1'
+PORT = 5000
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5379, debug=True)
+    app.run(debug=True)
