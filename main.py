@@ -3,20 +3,30 @@ import requests
 import os, json
 from flask import Flask, request, jsonify
 from flask_cors import CORS
+import logging
+from datetime import datetime
 
 with open('subjects.json') as f:
     subjects = json.load(f)
 
 
+logging.basicConfig(filename='app.log', level=logging.DEBUG)
 app = Flask(__name__)
 CORS(app, resources={"*": {"origins": ["http://127.0.0.1:5500", "http://localhost"]}})
 
+cached_links = {}
+CACHE_TIMEOUT = 60 * 60 * 24 * 30
+last_updated = int(datetime.now().timestamp())
 
 load_dotenv()
 CX = os.getenv('CX')
 API_KEY = os.getenv('KEY')
 
 def search_query(query):
+    if query in cached_links.keys():
+        print('Cache hit for query:', query)
+        return cached_links[query]
+
     url = 'https://www.googleapis.com/customsearch/v1'
     params = {
         'key': API_KEY,
@@ -30,10 +40,13 @@ def search_query(query):
         return None
     res = response.json()
     if 'items' not in res:
+        cached_links[query] = None
         return None
     if len(res['items']) == 0:
+        cached_links[query] = None
         return None
     
+    cached_links[query] = res['items'][0]['link']
     return res['items'][0]['link']
 
 def codeify_ms(data):
@@ -53,6 +66,11 @@ def codeify_qp(q):
 
 @app.route('/search', methods=['POST'])
 def main():
+    global last_updated
+    if int(datetime.now().timestamp()) - last_updated > CACHE_TIMEOUT:
+        cached_links.clear()
+        last_updated = int(datetime.now().timestamp())
+    print('Request IP:', request.remote_addr)
     data = request.form
     if data['type'] == 'ms':
         query = codeify_ms(data)
