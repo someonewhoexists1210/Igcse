@@ -6,10 +6,6 @@ from flask_cors import CORS
 import logging
 from datetime import datetime
 
-with open('subjects.json') as f:
-    subjects = json.load(f)
-
-
 logging.basicConfig(filename='app.log', level=logging.DEBUG)
 app = Flask(__name__)
 CORS(app, resources={"*": {"origins": ["http://127.0.0.1:5500", "http://localhost"]}})
@@ -84,6 +80,9 @@ def main():
 
 @app.route('/subjects', methods=['GET'])
 def get_subjects():
+    with open('subjects.json', 'r') as f:
+        subjects = json.load(f)
+        f.close()
     return jsonify(subjects)
 
 
