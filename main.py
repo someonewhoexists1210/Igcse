@@ -91,6 +91,6 @@ def index():
 
 
 HOST = '127.0.0.1'
-PORT = 5000
+PORT = 5379
 if __name__ == '__main__':
     app.run(debug=True)
