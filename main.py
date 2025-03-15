@@ -1,7 +1,7 @@
 from dotenv import load_dotenv
 import requests
 import os, json
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
 from flask_cors import CORS
 import logging
 from datetime import datetime
@@ -84,6 +84,10 @@ def get_subjects():
         subjects = json.load(f)
         f.close()
     return jsonify(subjects)
+
+@app.route('/')
+def index():
+    return render_template('index.html')
 
 
 HOST = '127.0.0.1'
