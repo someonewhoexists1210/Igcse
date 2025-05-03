@@ -88,9 +88,10 @@ def get_subjects():
 
 @app.route('/papersdownload', methods=['POST'])
 def get_papers():
-    code = request.args.get('code')
-    papers = request.args.get('papers').split(',')
-    variants = request.args.get('variants').split(',')
+    data = request.form
+    code = data['code']
+    papers = data['papers'].split(',')
+    variants = data['variants'].split(',')
     papers = [paper.strip() for paper in papers]
     variants = [variant.strip() for variant in variants]
     pdf = get_paper_pdf(code, papers, variants)
@@ -114,4 +115,4 @@ def paper():
 HOST = '127.0.0.1'
 PORT = 5379
 if __name__ == '__main__':
-    app.run(HOST, PORT)
+    app.run(HOST, PORT, debug=True)
