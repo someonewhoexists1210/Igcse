@@ -1,14 +1,15 @@
 from dotenv import load_dotenv
 import requests
 import os, json
-from flask import Flask, request, jsonify, render_template
+from flask import Flask, request, jsonify, render_template, send_file
 from flask_cors import CORS
-import logging
+import logging, io
 from datetime import datetime
+from paper import get_paper_pdf
 
 logging.basicConfig(filename='app.log', level=logging.DEBUG)
 app = Flask(__name__)
-CORS(app, resources={"*": {"origins": ["http://127.0.0.1:5500", "http://localhost"]}})
+CORS(app, resources={"*": {"origins": ["http://127.0.0.1:5379", "http://localhost"]}})
 
 cached_links = {}
 CACHE_TIMEOUT = 60 * 60 * 24 * 30
@@ -85,12 +86,32 @@ def get_subjects():
         f.close()
     return jsonify(subjects)
 
+@app.route('/papersdownload', methods=['POST'])
+def get_papers():
+    code = request.args.get('code')
+    papers = request.args.get('papers').split(',')
+    variants = request.args.get('variants').split(',')
+    papers = [paper.strip() for paper in papers]
+    variants = [variant.strip() for variant in variants]
+    pdf = get_paper_pdf(code, papers, variants)
+
+    return send_file(
+        io.BytesIO(pdf),
+        mimetype='application/pdf',
+        as_attachment=True,
+        download_name=code + "_papers.pdf",
+    )
+
 @app.route('/')
 def index():
     return render_template('index.html')
+
+@app.route('/paper', methods=['GET'])
+def paper():
+    return render_template('paper.html')
 
 
 HOST = '127.0.0.1'
 PORT = 5379
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(HOST, PORT)
