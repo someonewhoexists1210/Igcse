@@ -4,6 +4,8 @@ import os, json
 from flask import Flask, request, jsonify, render_template, send_file
 from flask_cors import CORS
 import logging, io
+import uuid
+import threading
 from datetime import datetime
 from paper import get_paper_pdf
 
@@ -18,10 +20,10 @@ last_updated = int(datetime.now().timestamp())
 load_dotenv()
 CX = os.getenv('CX')
 API_KEY = os.getenv('KEY')
+tasks = {} 
 
 def search_query(query):
     if query in cached_links.keys():
-        print('Cache hit for query:', query)
         return cached_links[query]
 
     url = 'https://www.googleapis.com/customsearch/v1'
@@ -31,7 +33,6 @@ def search_query(query):
         'q': query,
         'fileType': 'pdf',
     }
-    print(url, params)
     response = requests.get(url, params=params)
     if response.status_code != 200:
         return None
@@ -67,7 +68,6 @@ def main():
     if int(datetime.now().timestamp()) - last_updated > CACHE_TIMEOUT:
         cached_links.clear()
         last_updated = int(datetime.now().timestamp())
-    print('Request IP:', request.remote_addr)
     data = request.form
     if data['type'] == 'ms':
         query = codeify_ms(data)
@@ -86,22 +86,58 @@ def get_subjects():
         f.close()
     return jsonify(subjects)
 
-@app.route('/papersdownload', methods=['POST'])
-def get_papers():
-    data = request.form
-    code = data['code']
-    papers = data['papers'].split(',')
-    variants = data['variants'].split(',')
-    papers = [paper.strip() for paper in papers]
-    variants = [variant.strip() for variant in variants]
-    pdf = get_paper_pdf(code, papers, variants)
 
-    return send_file(
-        io.BytesIO(pdf),
-        mimetype='application/pdf',
-        as_attachment=True,
-        download_name=code + "_papers.pdf",
-    )
+def background_task(task_id, code, papers, variants, years_end):
+    def update_progress(percent, message):
+        tasks[task_id]['progress'] = percent
+        tasks[task_id]['message'] = message
+
+    try:
+        tasks[task_id] = {'status': 'processing', 'progress': 0, 'message': 'Starting...', 'pdf': None}
+        pdf_data = get_paper_pdf(code, papers, variants, years_end, update_progress)
+        tasks[task_id]['status'] = 'done'
+        tasks[task_id]['pdf'] = pdf_data
+        tasks[task_id]['progress'] = 100
+        tasks[task_id]['message'] = 'Done'
+    except Exception as e:
+        tasks[task_id] = {'status': 'error', 'message': str(e), 'progress': 0}
+
+@app.route('/papersdownload', methods=['POST'])
+def start_download():
+    code = request.form['code']
+    papers = [p.strip() for p in request.form['papers'].split(',')]
+    variants = [v.strip() for v in request.form['variants'].split(',')]
+    years_start = int(request.form.get('yearsstart', '').strip())
+
+    task_id = str(uuid.uuid4())
+    tasks[task_id] = {'status': 'processing', 'progress': 0, 'message': 'Starting...'}
+    thread = threading.Thread(target=background_task, args=(task_id, code, papers, variants, years_start))
+    thread.start()
+
+    return jsonify({'task_id': task_id}), 202
+
+@app.route('/papersdownload/status/<task_id>', methods=['GET'])
+def check_status(task_id):
+    task = tasks.get(task_id)
+    if not task:
+        return jsonify({'status': 'not_found'}), 404
+
+    if task['status'] == 'done':
+        return send_file(
+            io.BytesIO(task['pdf']),
+            mimetype='application/pdf',
+            as_attachment=True,
+            download_name='download.pdf'
+        )
+    elif task['status'] == 'error':
+        return jsonify({'status': 'error', 'message': task['message']}), 500
+    else:
+        return jsonify({
+            'status': 'processing',
+            'progress': task['progress'],
+            'message': task['message']
+        }), 202
+
 
 @app.route('/')
 def index():
