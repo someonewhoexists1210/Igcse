@@ -9,7 +9,7 @@ from paper import get_paper_pdf
 
 logging.basicConfig(filename='app.log', level=logging.DEBUG)
 app = Flask(__name__)
-CORS(app, resources={"*": {"origins": ["http://127.0.0.1:5379", "http://localhost"]}})
+CORS(app, resources={"*": {"origins": ["http://igcse.someonewhoexists.hackclub.app", "http://127.0.0.1"]}})
 
 cached_links = {}
 CACHE_TIMEOUT = 60 * 60 * 24 * 30
@@ -112,7 +112,7 @@ def paper():
     return render_template('paper.html')
 
 
-HOST = '127.0.0.1'
+HOST = '0.0.0.0'
 PORT = 5379
 if __name__ == '__main__':
     app.run(HOST, PORT, debug=True)
